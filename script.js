@@ -1,15 +1,16 @@
-// OpenWeatherMap API設定
-const API_KEY = "dcb79bb4ccaa63805c631f90eaa1defb"; // OpenWeatherMap APIキーをここに入力してください
-const API_BASE_URL = "https://api.openweathermap.org/data/2.5";
+// 天気アプリのJavaScript
+// APIキー（無料で取得）
+const API_KEY = "dcb79bb4ccaa63805c631f90eaa1defb";
+const API_URL = "https://api.openweathermap.org/data/2.5";
 
-// DOM要素の取得
+// DOM要素を取得
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
 const loading = document.getElementById("loading");
 const error = document.getElementById("error");
 const weatherContainer = document.getElementById("weatherContainer");
 
-// 現在の天気要素
+// 天気表示用の要素たち
 const currentCity = document.getElementById("currentCity");
 const currentDate = document.getElementById("currentDate");
 const currentTemp = document.getElementById("currentTemp");
@@ -20,181 +21,191 @@ const humidity = document.getElementById("humidity");
 const windSpeed = document.getElementById("windSpeed");
 const pressure = document.getElementById("pressure");
 
-// 予報コンテナ
+// 予報表示用のコンテナ
 const forecastContainer = document.getElementById("forecastContainer");
 
-// イベントリスナー
-searchBtn.addEventListener("click", handleSearch);
-cityInput.addEventListener("keypress", (e) => {
+// イベントリスナー（クリックとEnterキー対応）
+searchBtn.addEventListener("click", searchWeather);
+cityInput.addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
-    handleSearch();
+    searchWeather(); // Enterでも検索できるように
   }
 });
 
-// 検索処理
-async function handleSearch() {
-  const city = cityInput.value.trim();
+// 検索実行関数（メイン処理）
+function searchWeather() {
+  const city = cityInput.value.trim(); // 前後の空白を削除
 
+  // 入力チェック
   if (!city) {
-    showError("都市名を入力してください");
+    showError("都市名を入力してください！");
     return;
   }
 
+  // APIキーのチェック（念のため）
   if (!API_KEY || API_KEY === "YOUR_API_KEY_HERE") {
-    showError(
-      "APIキーが設定されていません。script.jsファイルでAPI_KEYを設定してください。"
-    );
+    showError("APIキーが設定されていません");
     return;
   }
 
+  // 天気データを取得しに行く
+  getWeatherData(city);
+}
+
+// 天気データ取得の関数（async/await使用、非同期処理）
+async function getWeatherData(city) {
   try {
-    showLoading();
-    hideError();
+    showLoading(); // くるくる表示
+    hideError(); // 前のエラーを消す
 
-    const [currentWeather, forecast] = await Promise.all([
-      getCurrentWeather(city),
-      getForecast(city),
-    ]);
+    // APIから現在の天気と予報を取得（同時実行で高速化）
+    const currentWeather = await getCurrentWeather(city);
+    const forecast = await getForecast(city);
 
-    displayCurrentWeather(currentWeather);
-    displayForecast(forecast);
+    // 画面に表示
+    showCurrentWeather(currentWeather);
+    showForecast(forecast);
     showWeatherContainer();
-  } catch (err) {
-    console.error("天気情報の取得に失敗しました:", err);
-    showError(err.message || "天気情報の取得に失敗しました");
+  } catch (error) {
+    console.log("エラー発生:", error); // コンソールで確認用
+    showError("天気情報の取得に失敗しました😢");
   } finally {
-    hideLoading();
+    hideLoading(); // ローディング終了
   }
 }
 
-// 現在の天気を取得
+// 現在の天気を取得（fetch API使用）
 async function getCurrentWeather(city) {
-  const response = await fetch(
-    `${API_BASE_URL}/weather?q=${encodeURIComponent(
-      city
-    )}&appid=${API_KEY}&units=metric&lang=ja`
-  );
+  const url = `${API_URL}/weather?q=${city}&appid=${API_KEY}&units=metric&lang=ja`;
 
+  const response = await fetch(url);
+
+  // エラーハンドリング
   if (!response.ok) {
     if (response.status === 404) {
-      throw new Error("指定された都市が見つかりませんでした");
-    } else if (response.status === 401) {
-      throw new Error("APIキーが無効です");
+      throw new Error("その都市は見つかりませんでした");
     } else {
-      throw new Error("天気情報の取得に失敗しました");
+      throw new Error("天気データの取得に失敗しました");
     }
   }
 
   return await response.json();
 }
 
-// 予報を取得
+// 予報データを取得
 async function getForecast(city) {
-  const response = await fetch(
-    `${API_BASE_URL}/forecast?q=${encodeURIComponent(
-      city
-    )}&appid=${API_KEY}&units=metric&lang=ja`
-  );
+  const url = `${API_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=ja`;
+
+  const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error("予報情報の取得に失敗しました");
+    throw new Error("予報データの取得に失敗しました");
   }
 
   return await response.json();
 }
 
-// 現在の天気を表示
-function displayCurrentWeather(data) {
-  currentCity.textContent = `${data.name}, ${data.sys.country}`;
-  currentDate.textContent = formatDate(new Date());
-  currentTemp.textContent = Math.round(data.main.temp);
-  currentIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+// 現在の天気を表示する関数
+function showCurrentWeather(data) {
+  // 都市名と国を表示
+  currentCity.textContent = data.name + ", " + data.sys.country;
+  currentDate.textContent = getToday(); // 今日の日付を取得
+  currentTemp.textContent = Math.round(data.main.temp); // 小数点以下切り捨て
+
+  // 天気アイコンの設定
+  currentIcon.src =
+    "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png";
   currentIcon.alt = data.weather[0].description;
+
   currentDescription.textContent = data.weather[0].description;
-  feelsLike.textContent = `${Math.round(data.main.feels_like)}°C`;
-  humidity.textContent = `${data.main.humidity}%`;
-  windSpeed.textContent = `${Math.round(data.wind.speed * 3.6)} km/h`;
-  pressure.textContent = `${data.main.pressure} hPa`;
+
+  // 詳細情報を設定
+  feelsLike.textContent = Math.round(data.main.feels_like) + "°C";
+  humidity.textContent = data.main.humidity + "%";
+  windSpeed.textContent = Math.round(data.wind.speed * 3.6) + " km/h"; // m/sからkm/hに計算
+  pressure.textContent = data.main.pressure + " hPa";
 }
 
-// 予報を表示
-function displayForecast(data) {
-  forecastContainer.innerHTML = "";
+// 3日間予報を表示（ちょっと複雑だったけど頑張りました）
+function showForecast(data) {
+  forecastContainer.innerHTML = ""; // 前の検索結果をクリア
 
-  // 3日分の予報を取得（24時間ごと）
-  const dailyForecasts = [];
+  // 予報データから3日分を抽出
+  const forecasts = [];
   const today = new Date().getDate();
 
-  for (let i = 0; i < data.list.length && dailyForecasts.length < 3; i++) {
-    const forecast = data.list[i];
-    const forecastDate = new Date(forecast.dt * 1000);
+  // まずは12時の予報を探す（正午のデータが一番正確らしい）
+  for (let i = 0; i < data.list.length && forecasts.length < 3; i++) {
+    const item = data.list[i];
+    const date = new Date(item.dt * 1000);
 
-    // 今日以降の12:00の予報を取得
-    if (forecastDate.getDate() !== today && forecastDate.getHours() === 12) {
-      dailyForecasts.push(forecast);
+    if (date.getDate() !== today && date.getHours() === 12) {
+      forecasts.push(item);
     }
   }
 
-  // 12:00の予報がない場合は、各日の最初の予報を使用
-  if (dailyForecasts.length < 3) {
-    dailyForecasts.length = 0;
+  // 12時のデータがない場合は各日の最初のデータを使用
+  if (forecasts.length < 3) {
+    forecasts.length = 0; // リセット
     const usedDates = new Set([today]);
 
-    for (let i = 0; i < data.list.length && dailyForecasts.length < 3; i++) {
-      const forecast = data.list[i];
-      const forecastDate = new Date(forecast.dt * 1000).getDate();
+    for (let i = 0; i < data.list.length && forecasts.length < 3; i++) {
+      const item = data.list[i];
+      const date = new Date(item.dt * 1000).getDate();
 
-      if (!usedDates.has(forecastDate)) {
-        dailyForecasts.push(forecast);
-        usedDates.add(forecastDate);
+      if (!usedDates.has(date)) {
+        forecasts.push(item);
+        usedDates.add(date);
       }
     }
   }
 
-  dailyForecasts.forEach((forecast) => {
-    const forecastItem = createForecastItem(forecast);
-    forecastContainer.appendChild(forecastItem);
+  // 予報カードを作成
+  forecasts.forEach(function (forecast) {
+    const card = makeForecastCard(forecast);
+    forecastContainer.appendChild(card);
   });
 }
 
-// 予報アイテムを作成
-function createForecastItem(forecast) {
+// 予報カードを作る関数
+function makeForecastCard(forecast) {
   const date = new Date(forecast.dt * 1000);
-  const item = document.createElement("div");
-  item.className = "forecast-item";
+  const card = document.createElement("div");
+  card.className = "forecast-item";
 
-  item.innerHTML = `
-        <div class="forecast-date">${formatForecastDate(date)}</div>
-        <div class="forecast-weather">
-            <img src="https://openweathermap.org/img/wn/${
-              forecast.weather[0].icon
-            }.png" 
-                 alt="${forecast.weather[0].description}">
-            <div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div>
-            <div class="forecast-desc">${forecast.weather[0].description}</div>
-        </div>
-        <div class="forecast-details">
-            <span>湿度: ${forecast.main.humidity}%</span>
-            <span>風速: ${Math.round(forecast.wind.speed * 3.6)} km/h</span>
-        </div>
-    `;
+  // HTMLを組み立て（innerHTML）
+  card.innerHTML = `
+    <div class="forecast-date">${getForecastDate(date)}</div>
+    <div class="forecast-weather">
+      <img src="https://openweathermap.org/img/wn/${
+        forecast.weather[0].icon
+      }.png" alt="${forecast.weather[0].description}">
+      <div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div>
+      <div class="forecast-desc">${forecast.weather[0].description}</div>
+    </div>
+    <div class="forecast-details">
+      <span>湿度: ${forecast.main.humidity}%</span>
+      <span>風速: ${Math.round(forecast.wind.speed * 3.6)} km/h</span>
+    </div>
+  `;
 
-  return item;
+  return card;
 }
 
-// 日付をフォーマット
-function formatDate(date) {
+// 今日の日付を取得（日本語表示）
+function getToday() {
+  const today = new Date();
   const options = {
     year: "numeric",
     month: "long",
     day: "numeric",
     weekday: "long",
   };
-  return date.toLocaleDateString("ja-JP", options);
+  return today.toLocaleDateString("ja-JP", options);
 }
 
-// 予報日付をフォーマット
-function formatForecastDate(date) {
+// 予報の日付をフォーマット
+function getForecastDate(date) {
   const options = {
     month: "short",
     day: "numeric",
@@ -203,38 +214,40 @@ function formatForecastDate(date) {
   return date.toLocaleDateString("ja-JP", options);
 }
 
-// ローディング表示
+// ローディング画面を表示
 function showLoading() {
   loading.classList.remove("hidden");
   weatherContainer.classList.add("hidden");
 }
 
-// ローディング非表示
+// ローディング画面を隠す
 function hideLoading() {
   loading.classList.add("hidden");
 }
 
-// エラー表示
+// エラーメッセージを表示
 function showError(message) {
   error.textContent = message;
   error.classList.remove("hidden");
   weatherContainer.classList.add("hidden");
 }
 
-// エラー非表示
+// エラーメッセージを隠す
 function hideError() {
   error.classList.add("hidden");
 }
 
-// 天気コンテナ表示
+// 天気コンテナを表示
 function showWeatherContainer() {
   weatherContainer.classList.remove("hidden");
 }
 
-// 初期化
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("天気ダッシュボードが初期化されました");
-  console.log(
-    "OpenWeatherMap APIキーを設定してください: https://openweathermap.org/api"
-  );
+// ページが読み込まれた時の初期処理
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("🌤️ お天気チェッカー起動しました！");
+  console.log("作成者: Yuki | 大学課題作品");
+
+  // デバッグ用（最初は東京の天気を表示してたけどコメントアウト）
+  // cityInput.value = "Tokyo";
+  // searchWeather();
 });

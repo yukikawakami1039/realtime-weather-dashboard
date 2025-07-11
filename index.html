@@ -3,12 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>リアルタイム天気ダッシュボード</title>
+    <title>天気予報アプリ</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- Google Fontsから綺麗なフォントを読み込み（ネットで調べました） -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Font Awesomeでアイコン使用 -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
@@ -16,95 +18,106 @@
   </head>
   <body>
     <div class="container">
+      <!-- タイトル部分 -->
       <header class="header">
         <h1 class="title">
           <i class="fas fa-cloud-sun"></i>
-          リアルタイム天気ダッシュボード
+          天気予報アプリ
         </h1>
+        <!-- 作成者情報 -->
+        <p style="color: white; font-size: 14px; margin-top: 5px">
+          made by Yuki Kawakami
+        </p>
       </header>
 
+      <!-- メインコンテンツ -->
       <main class="main">
+        <!-- 検索部分（デザインに時間かかった...） -->
         <div class="search-section">
           <div class="search-container">
             <input
               type="text"
               id="cityInput"
-              placeholder="都市名を入力してください (例: Tokyo, London)"
+              placeholder="都市名を入力 (例: Tokyo, Kyoto, New York)"
               class="search-input"
             />
             <button id="searchBtn" class="search-btn">
               <i class="fas fa-search"></i>
             </button>
           </div>
+          <!-- ローディング（くるくる回るやつ） -->
           <div id="loading" class="loading hidden">
             <div class="spinner"></div>
-            <span>天気情報を取得中...</span>
+            <span>天気データを取得中です...</span>
           </div>
+          <!-- エラーメッセージ表示 -->
           <div id="error" class="error hidden"></div>
         </div>
 
+        <!-- 天気情報表示エリア -->
         <div id="weatherContainer" class="weather-container hidden">
-          <!-- 現在の天気 -->
+          <!-- 今の天気 -->
           <div class="current-weather">
             <div class="current-info">
               <div class="location">
-                <h2 id="currentCity"></h2>
-                <p id="currentDate"></p>
+                <h2 id="currentCity">都市名</h2>
+                <p id="currentDate">日付</p>
               </div>
               <div class="temperature-section">
                 <div class="main-temp">
-                  <span id="currentTemp"></span>
+                  <span id="currentTemp">--</span>
                   <span class="temp-unit">°C</span>
                 </div>
                 <div class="weather-icon">
-                  <img id="currentIcon" src="" alt="Weather Icon" />
+                  <img id="currentIcon" src="" alt="天気アイコン" />
                 </div>
               </div>
             </div>
             <div class="weather-details">
-              <h3 id="currentDescription"></h3>
+              <h3 id="currentDescription">天気の説明</h3>
+              <!-- 詳細情報（Grid使って並べました） -->
               <div class="details-grid">
                 <div class="detail-item">
-                  <i class="fas fa-eye"></i>
+                  <i class="fas fa-thermometer-half"></i>
                   <span>体感温度</span>
-                  <span id="feelsLike"></span>
+                  <span id="feelsLike">--°C</span>
                 </div>
                 <div class="detail-item">
                   <i class="fas fa-tint"></i>
                   <span>湿度</span>
-                  <span id="humidity"></span>
+                  <span id="humidity">--%</span>
                 </div>
                 <div class="detail-item">
                   <i class="fas fa-wind"></i>
                   <span>風速</span>
-                  <span id="windSpeed"></span>
+                  <span id="windSpeed">-- km/h</span>
                 </div>
                 <div class="detail-item">
-                  <i class="fas fa-compress-arrows-alt"></i>
+                  <i class="fas fa-eye"></i>
                   <span>気圧</span>
-                  <span id="pressure"></span>
+                  <span id="pressure">-- hPa</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 3日間予報 -->
+          <!-- 3日間の予報（APIから取得） -->
           <div class="forecast-section">
-            <h3 class="forecast-title">3日間予報</h3>
+            <h3 class="forecast-title">今後3日間の予報</h3>
             <div id="forecastContainer" class="forecast-container">
-              <!-- 予報データがここに追加されます -->
+              <!-- JavaScriptで動的に追加される部分 -->
             </div>
           </div>
         </div>
       </main>
 
+      <!-- フッター（地味だけど一応） -->
       <footer class="footer">
-        <p>
-          &copy; 2025 リアルタイム天気ダッシュボード. Powered by OpenWeatherMap
-        </p>
+        <p>&copy; 2025 お天気予報アプリ | OpenWeatherMap API使用</p>
       </footer>
     </div>
 
+    <!-- JavaScript読み込み（最後に書くのが基本らしい） -->
     <script src="script.js"></script>
   </body>
 </html>

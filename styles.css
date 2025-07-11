@@ -1,4 +1,6 @@
-/* リセットとベーススタイル */
+/* 天気予報アプリ　CSS */
+
+/* リセット（授業で習った基本） */
 * {
   margin: 0;
   padding: 0;
@@ -6,118 +8,94 @@
 }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  font-family: Arial, sans-serif; /* シンプルなフォント */
+  background-color: #4e79a7; /* 青っぽい背景 */
   color: #333;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-/* ヘッダー */
+/* 全体 */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* タイトル */
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 30px;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 28px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
 }
 
 .title i {
-  margin-right: 0.5rem;
+  margin-right: 10px;
   color: #ffd700;
 }
 
-/* メインコンテンツ */
+/* メイン部分（特に何も設定してない） */
 .main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  /* 基本的な設定のみ */
+  margin-bottom: 20px;
 }
 
-/* 検索セクション */
+/* 検索部分 */
 .search-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .search-container {
-  display: flex;
   background: white;
-  border-radius: 50px;
-  padding: 0.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
-  width: 100%;
+  border-radius: 25px;
+  padding: 5px;
+  display: inline-block;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {
-  flex: 1;
   border: none;
-  outline: none;
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
-  border-radius: 50px;
-  background: transparent;
-}
-
-.search-input::placeholder {
-  color: #999;
+  padding: 10px 15px;
+  font-size: 16px;
+  width: 300px;
+  border-radius: 20px;
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-color: #667eea;
   border: none;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px;
+  height: 40px;
   color: white;
-  font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  margin-left: 5px;
 }
 
 .search-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background-color: #5a6fd8;
 }
 
 /* ローディング */
 .loading {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  text-align: center;
   color: white;
-  font-size: 1.1rem;
+  margin: 20px 0;
 }
 
 .spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid white;
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-top: 2px solid transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 10px;
 }
 
 @keyframes spin {
@@ -131,215 +109,184 @@ body {
 
 /* エラー */
 .error {
-  background: rgba(255, 69, 58, 0.9);
+  background-color: #ff6b6b;
   color: white;
-  padding: 1rem 2rem;
-  border-radius: 10px;
+  padding: 15px;
+  border-radius: 5px;
   text-align: center;
-  font-weight: 500;
+  margin: 20px 0;
 }
 
-/* 天気コンテナ */
+/* 天気表示エリア */
 .weather-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  margin-top: 20px;
 }
 
 /* 現在の天気 */
 .current-weather {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .current-info {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
 }
 
 .location h2 {
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: 24px;
   color: #333;
-  margin-bottom: 0.5rem;
+  margin-bottom: 5px;
 }
 
 .location p {
   color: #666;
-  font-size: 1.1rem;
+  font-size: 14px;
 }
 
 .temperature-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 
 .main-temp {
-  font-size: 4rem;
-  font-weight: 700;
+  font-size: 48px;
+  font-weight: bold;
   color: #333;
+  margin-right: 10px;
 }
 
 .temp-unit {
-  font-size: 2rem;
+  font-size: 24px;
   color: #666;
 }
 
 .weather-icon img {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 
 .weather-details h3 {
-  font-size: 1.5rem;
+  font-size: 18px;
   color: #333;
-  margin-bottom: 1.5rem;
-  text-transform: capitalize;
+  margin-bottom: 15px;
 }
 
 .details-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .detail-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: rgba(102, 126, 234, 0.1);
-  border-radius: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
 }
 
 .detail-item i {
   color: #667eea;
-  font-size: 1.2rem;
-  width: 20px;
+  margin-right: 8px;
+  width: 16px;
 }
 
 .detail-item span:first-of-type {
-  font-weight: 500;
   color: #666;
+  margin-right: 10px;
 }
 
 .detail-item span:last-of-type {
-  font-weight: 600;
-  color: #333;
-  margin-left: auto;
+  font-weight: bold;
 }
 
 /* 予報セクション */
 .forecast-section {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .forecast-title {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 20px;
   color: #333;
-  margin-bottom: 1.5rem;
+  margin-bottom: 15px;
   text-align: center;
 }
 
 .forecast-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
 }
 
 .forecast-item {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-color: #667eea;
   color: white;
-  padding: 1.5rem;
-  border-radius: 15px;
+  padding: 15px;
+  border-radius: 8px;
   text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.forecast-item:hover {
-  transform: translateY(-5px);
 }
 
 .forecast-date {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.forecast-weather {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .forecast-weather img {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px;
 }
 
 .forecast-temp {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .forecast-desc {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  text-transform: capitalize;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
 
 .forecast-details {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  opacity: 0.9;
+  font-size: 11px;
 }
 
-/* フッター */
-.footer {
-  text-align: center;
-  padding: 2rem 0;
-  color: white;
-  opacity: 0.8;
-  font-size: 0.9rem;
-}
-
-/* ユーティリティクラス */
+/* 非表示クラス */
 .hidden {
-  display: none !important;
+  display: none;
 }
 
-/* レスポンシブデザイン */
-@media (max-width: 768px) {
+/* スマホ対応 */
+@media (max-width: 600px) {
   .container {
     padding: 15px;
   }
 
   .title {
-    font-size: 2rem;
+    font-size: 24px;
+  }
+
+  .search-input {
+    width: 250px;
   }
 
   .current-info {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
   }
 
   .main-temp {
-    font-size: 3rem;
+    font-size: 36px;
   }
 
   .details-grid {
@@ -348,30 +295,5 @@ body {
 
   .forecast-container {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-container {
-    padding: 0.3rem;
-  }
-
-  .search-input {
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
-  }
-
-  .search-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  .current-weather,
-  .forecast-section {
-    padding: 1.5rem;
-  }
-
-  .main-temp {
-    font-size: 2.5rem;
   }
 }
